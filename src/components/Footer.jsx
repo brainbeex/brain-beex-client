@@ -8,10 +8,10 @@ const Footer = () => {
     <footer className="bg-bgOffWhite border-t mt-12">
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
 
-        {/* 🔥 Main Grid Layout */}
+        {/*  Main Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 items-center">
 
-          {/* 🏷️ Brand (Center on lg) */}
+          {/*  Brand (Center on lg) */}
           <div className="md:col-span-12 lg:col-span-6 flex flex-col items-center text-center">
             <Link to="/">
               <img
@@ -31,7 +31,7 @@ const Footer = () => {
           </div>
 
 
-          {/* 🧭 Navigation (Left on lg) */}
+          {/*  Navigation (Left on lg) */}
           <div className="sm:col-span-12 text-center md:col-span-6 md:text-left lg:col-span-3 lg:text-left text-navy">
             <h4 className="text-2xl font-semibold mb-2">Navigation</h4>
             <ul className="space-y-1 text-sm">
@@ -45,7 +45,7 @@ const Footer = () => {
 
           
 
-          {/* 🌐 Social Media (Right on lg) */}
+          {/*  Social Media (Right on lg) */}
           <div className="sm:col-span-12 text-center md:col-span-6 md:text-right lg:col-span-3 lg:text-center text-navy">
             <h4 className="text-2xl font-semibold mb-2 md:text-center">Follow Us:</h4>
 
@@ -60,7 +60,7 @@ const Footer = () => {
 
         </div>
 
-        {/* 🔻 Copyright */}
+        {/*  Copyright */}
         <div className="mt-8 border-t pt-4 text-sm text-navy text-center">
           <p>
             © {new Date().getFullYear()}{" "}
