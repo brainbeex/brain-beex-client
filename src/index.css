@@ -1,1 +1,21 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer components {
+  .btn-custom {
+    @apply btn border-2 border-transparent bg-amber text-bgWhite 
+           hover:text-navy hover:border-navy hover:border-2 hover:bg-transparent
+           transition duration-300;
+  }
+
+   .btn-custom-nav-menu {
+    @apply text-navy font-bold btn border-2 border-transparent hover:text-navy hover:border-navy hover:border-2 hover:bg-transparent transition duration-300;
+  }
+
+  .btn-custom-google {
+    @apply btn border-2 border-transparent bg-navy text-bgWhite hover:text-navy hover:border-navy hover:border-2 hover:bg-transparent
+           transition duration-300 w-full font-bold;
+  }
+}
