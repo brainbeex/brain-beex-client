@@ -1,148 +1,135 @@
-import React, { use, useRef, useState } from "react";
-import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router-dom";
-import { useLocation, useNavigate } from "react-router";
+import { useContext, useRef, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../auth/AuthProvider";
+import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { getAuth, GoogleAuthProvider, sendPasswordResetEmail, signInWithPopup } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  sendPasswordResetEmail,
+  signInWithPopup,
+} from "firebase/auth";
 import app from "../firebase/firebase.config";
 
+const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
-const auth = getAuth(app);
-
 const Login = () => {
-  const { userSignin } = use(AuthContext)
-  const location = useLocation();
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-  const emailRef = useRef()
-  const [showPassword, setShowPassword] = useState(false)
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const location = useLocation();
 
+  const emailRef = useRef();
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    try {
+      await login(email, password);
+      navigate(location.state || "/");
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const email = form.email.value;
-    const password = form.password.value;
-
-    userSignin(email, password)
-      .then((result) => {
-        const user = result.user;
-        navigate(`${location.state ? location.state : "/"}`)
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        setError(errorCode)
-      })
-
+  const handleGoogleSignin = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handleTogglePassword = (e) => {
-    e.preventDefault();
-    setShowPassword(!showPassword)
-  }
-
-  const handleForgetPassword = () => {
+  const handleForgetPassword = async () => {
     const email = emailRef.current.value;
-    sendPasswordResetEmail(auth, email)
-      .then(() => {
-        alert("change Your email password")
-      })
-      .catch(() => {
-        console.log("Error")
-      })
-  }
 
-  const handleGoogleSignin = () => {
-    signInWithPopup(auth, googleProvider)
-    .then((result) => {
-        console.log(result)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
+    if (!email) return alert("Enter email first");
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert("Password reset email sent");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-base-200">
-      <div className="card w-full max-w-md shadow-xl bg-base-100">
+    <div className="flex justify-center items-center min-h-screen bg-bgOffWhite">
+      <div className="card w-full max-w-md shadow-xl bg-white">
         <div className="card-body">
           <h2 className="text-3xl font-bold text-center text-navy mb-6">
-            Login Your Account
+            Login
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block mb-2 font-semibold text-navy">Email</label>
-              <input
-                type="email"
-                name="email"
-                ref={emailRef}
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="Enter your email"
-                className="input input-bordered w-full"
-              />
-            </div>
+            <input
+              ref={emailRef}
+              type="email"
+              name="email"
+              placeholder="Email"
+              className="input input-bordered w-full"
+              required
+            />
 
             <div className="relative">
-              <label className="block mb-2 font-semibold text-navy">Password</label>
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                placeholder="Enter your password"
+                placeholder="Password"
                 className="input input-bordered w-full"
+                required
               />
-              <button 
-                onClick={handleTogglePassword}
-                className="btn btn-xs absolute bottom-2 right-3">
-                  {showPassword ? <FaEyeSlash></FaEyeSlash> : <FaEye></FaEye>}
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-3"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
 
-            <div 
-              onClick={handleForgetPassword}
-              className="text-right">
-              <a href="#" className="text-amber text-sm font-semibold hover:underline">
-                Forget Password?
-              </a>
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={handleForgetPassword}
+                className="text-amber text-sm"
+              >
+                Forgot Password?
+              </button>
             </div>
 
             {error && (
-              <p className="text-red-600 text-sm mt-2 text-center">{error}</p>
+              <p className="text-red-500 text-sm text-center">{error}</p>
             )}
 
-            <button onClick={handleSubmit} type="submit" className="btn-custom w-full font-bold">
-              Log In
+            <button type="submit" className="btn bg-amber text-navy w-full">
+              Login
             </button>
 
-            <div className="text-center mt-4">
-              <p className="text-navy font-semibold">
-                Don't have an account?{" "}
-                <Link to="/register" className="text-amber font-semibold hover:underline">
-                  Join Now
-                </Link>
-              </p>
-            </div>
+            <div className="divider">OR</div>
 
-            <div className="divider">or</div>
-
-            <button 
+            <button
+              type="button"
               onClick={handleGoogleSignin}
-              className="btn-custom-google"> <FcGoogle size={24}></FcGoogle>
+              className="btn btn-outline w-full flex items-center gap-2"
+            >
+              <FcGoogle size={22} />
               Continue with Google
             </button>
+
+            <p className="text-center text-sm mt-4 text-navy">
+              Don’t have an account?{" "}
+              <Link to="/register" className="text-amber font-semibold">
+                Register
+              </Link>
+            </p>
           </form>
         </div>
       </div>

@@ -1,192 +1,145 @@
-import React, { use, useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../auth/AuthProvider";
 import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
-// import { useAuth } from "../auth/AuthProvider";
 
 const googleProvider = new GoogleAuthProvider();
 
-//   const { register } = useAuth();
-
 const Register = () => {
-  const { createUser, setUser, updateUser } = use(AuthContext)
-  const [showPassword, setShowPassword] = useState(false)
-  
+  const { register } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     photo: "",
     password: "",
   });
-  const [nameError, setNameError] = useState("")
-  const [passwordError, setPasswordError] = useState("");
-  const navigate = useNavigate();
+
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { name, photo, email, password } = formData;
+    const { name, email, photo, password } = formData;
 
-    // Form Name Validation
-    if (name.trim().length < 3) {
-      setNameError("Name must be at least 3 characters long.");
-      return;
-    } else {
-      setNameError("");
+    try {
+      const result = await register(email, password);
+      const user = result.user;
+
+      // Optional: update profile
+      await user.updateProfile({
+        displayName: name,
+        photoURL: photo,
+      });
+
+      navigate("/");
+    } catch (err) {
+      setError(err.message);
     }
-
-    // Form Password Validation
-    if (password.length < 6) {
-      setPasswordError("Password must be at least 6 characters long.");
-      return;
-    } else if (!/[A-Z]/.test(password)) {
-      setPasswordError("Password must include at least one uppercase letter.");
-      return;
-    } else if (!/[a-z]/.test(password)) {
-      setPasswordError("Password must include at least one lowercase letter.");
-      return;
-    } else {
-      setPasswordError("");
-    }
-
-    createUser(email, password)
-      .then((result) => {
-        const user = result.user
-        updateUser({displayName: name, photoURL: photo})
-          .then(() => {
-            setUser({...user, displayName: name, photoURL: photo});
-            navigate("/")
-          })
-          .catch((error) => {
-            console.log(error)
-            setUser(user)
-          })
-        
-      })
-      .catch((error) => {
-        const errorMessage = error.message
-        setPasswordError(errorMessage);
-      })
   };
 
-  const handleTogglePassword = (e) => {
-    e.preventDefault();
-    setShowPassword(!showPassword)
-  }
-
-  const handleGoogleSignin = () => {
-    signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        console.log(result)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
+  const handleGoogleSignin = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-base-200">
-      <div className="card w-full max-w-md shadow-xl bg-base-100">
+    <div className="flex justify-center items-center min-h-screen bg-bgOffWhite">
+      <div className="card w-full max-w-md shadow-xl bg-white">
         <div className="card-body">
           <h2 className="text-3xl font-bold text-center text-navy mb-6">
-            Signup Your Account
+            Create Account
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block mb-2 font-semibold text-navy">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                placeholder="Enter your name"
-                className="input input-bordered w-full"
-              />
-            </div>
-            {nameError && (
-              <p className="text-red-600 text-sm mt-2 text-center">{nameError}</p>
-            )}
+            <input
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              className="input input-bordered w-full"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
 
-            <div>
-              <label className="block mb-2 font-semibold text-navy">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="Enter your email"
-                className="input input-bordered w-full"
-              />
-            </div>
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              className="input input-bordered w-full"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
 
-            <div>
-              <label className="block mb-2 font-semibold text-navy">Photo URL</label>
-              <input
-                type="text"
-                name="photo"
-                value={formData.photo}
-                onChange={handleChange}
-                placeholder="Enter photo URL"
-                className="input input-bordered w-full"
-              />
-            </div>
+            <input
+              type="text"
+              name="photo"
+              placeholder="Photo URL"
+              className="input input-bordered w-full"
+              value={formData.photo}
+              onChange={handleChange}
+            />
 
             <div className="relative">
-              <label className="block mb-2 font-semibold text-navy">Password</label>
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
+                placeholder="Password"
+                className="input input-bordered w-full"
                 value={formData.password}
                 onChange={handleChange}
                 required
-                placeholder="Enter password (min 6 chars)"
-                className="input input-bordered w-full"
               />
-              <button 
-                onClick={handleTogglePassword}
-                className="btn btn-xs absolute bottom-2 right-3">
-                  {showPassword ? <FaEyeSlash></FaEyeSlash> : <FaEye></FaEye>}
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-3"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
-              {passwordError && (
-                <p className="text-red-600 text-sm mt-2 text-center">
-                  {passwordError}
-                </p>
-              )}
             </div>
 
-            <button onClick={handleSubmit} type="submit" className="btn-custom w-full font-bold">
+            {error && (
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            )}
+
+            <button type="submit" className="btn bg-amber text-navy w-full">
               Register
             </button>
 
-            <div className="text-center mt-4">
-              <p className="text-navy font-semibold"> 
-                Already have an account?{" "}
-                <Link to="/login" className="text-amber font-semibold hover:underline">
-                  Login
-                </Link>
-              </p>
-            </div>
-
-            <div className="divider">or</div>
+            <div className="divider">OR</div>
 
             <button
-              onClick={handleGoogleSignin} 
-              className="btn-custom-google"> <FcGoogle size={24}></FcGoogle>
+              type="button"
+              onClick={handleGoogleSignin}
+              className="btn btn-outline w-full flex items-center gap-2"
+            >
+              <FcGoogle size={22} />
               Continue with Google
             </button>
+
+            <p className="text-center text-sm mt-4 text-navy">
+              Already have an account?{" "}
+              <Link to="/login" className="text-amber font-semibold">
+                Login
+              </Link>
+            </p>
           </form>
         </div>
       </div>
