@@ -1,7 +1,12 @@
 import axios from "axios";
 
+// const axiosInstance = axios.create({
+//   baseURL: import.meta.env.VITE_API_URL,
+// });
+
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: "https://brain-beex-server.vercel.app/api",
+  withCredentials: true,
 });
 
 // Request interceptor
