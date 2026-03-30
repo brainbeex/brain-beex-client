@@ -167,7 +167,7 @@ const Register = () => {
               )}
             </div>
 
-            <button type="submit" className="btn-custom w-full font-bold">
+            <button onClick={handleSubmit} type="submit" className="btn-custom w-full font-bold">
               Register
             </button>
 

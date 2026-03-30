@@ -123,7 +123,7 @@ const Login = () => {
               <p className="text-red-600 text-sm mt-2 text-center">{error}</p>
             )}
 
-            <button type="submit" className="btn-custom w-full font-bold">
+            <button onClick={handleSubmit} type="submit" className="btn-custom w-full font-bold">
               Log In
             </button>
 
