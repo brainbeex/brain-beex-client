@@ -22,6 +22,7 @@ const Login = () => {
   const emailRef = useRef();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,19 +31,32 @@ const Login = () => {
     const password = e.target.password.value;
 
     try {
+      setLoading(true);
       await login(email, password);
       navigate(location.state || "/");
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // ✅ FIXED GOOGLE LOGIN
   const handleGoogleSignin = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
-      navigate("/");
+      setLoading(true);
+
+      const result = await signInWithPopup(auth, googleProvider);
+
+      // 🔥 FORCE TOKEN GENERATION BEFORE NAVIGATION
+      await result.user.getIdToken(true);
+
+      navigate(location.state || "/");
     } catch (err) {
       console.log(err);
+      setError("Google sign-in failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,8 +123,12 @@ const Login = () => {
               <p className="text-red-500 text-sm text-center">{error}</p>
             )}
 
-            <button type="submit" className="btn bg-amber text-navy w-full">
-              Login
+            <button
+              type="submit"
+              className="btn bg-amber text-navy w-full"
+              disabled={loading}
+            >
+              {loading ? "Logging in..." : "Login"}
             </button>
 
             <div className="divider">OR</div>
@@ -119,9 +137,10 @@ const Login = () => {
               type="button"
               onClick={handleGoogleSignin}
               className="btn btn-outline w-full flex items-center gap-2"
+              disabled={loading}
             >
               <FcGoogle size={22} />
-              Continue with Google
+              {loading ? "Please wait..." : "Continue with Google"}
             </button>
 
             <p className="text-center text-sm mt-4 text-navy">
