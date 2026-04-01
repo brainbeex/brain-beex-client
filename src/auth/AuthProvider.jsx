@@ -55,7 +55,7 @@ const AuthProvider = ({ children }) => {
         const token = await currentUser.getIdToken();
 
         const res = await axiosInstance.post("/auth/jwt", {
-          token
+          idToken: token,
         });
 
         localStorage.setItem("access-token", res.data.token);

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../auth/AuthProvider";
 import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
 
 const googleProvider = new GoogleAuthProvider();
@@ -36,8 +36,8 @@ const Register = () => {
       const result = await register(email, password);
       const user = result.user;
 
-      // Optional: update profile
-      await user.updateProfile({
+      // ✅ FIXED: Firebase v9 correct way
+      await updateProfile(user, {
         displayName: name,
         photoURL: photo,
       });
