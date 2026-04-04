@@ -26,6 +26,7 @@ const auth = getAuth(app);
 const AuthProvider = ({ children }) => {
 
   const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // register
@@ -60,6 +61,9 @@ const AuthProvider = ({ children }) => {
 
         localStorage.setItem("access-token", res.data.token);
 
+        // ✅ Decode role from JWT response
+        setRole(res.data?.role || "user"); // fallback
+
       } else {
 
         localStorage.removeItem("access-token");
@@ -76,6 +80,7 @@ const AuthProvider = ({ children }) => {
 
   const authInfo = {
     user,
+    role,
     loading,
     register,
     login,

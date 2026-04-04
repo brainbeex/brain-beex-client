@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <div className="bg-bgOffWhite border-b border-borderGray sticky top-0 z-50">
@@ -112,7 +112,7 @@ const Navbar = () => {
                     <Link to="/admin">Dashboard</Link>
                   </li>
                   <li>
-                    <button>Logout</button>
+                    <button onClick={logout}>Logout</button>
                   </li>
                 </ul>
               </div>
