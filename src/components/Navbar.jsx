@@ -52,7 +52,7 @@ const Navbar = () => {
 
           <Link to="/" className="">
             <img
-              src="https://i.ibb.co.com/YFvhdJFp/Logo-Brain-Beex.png"
+              src="https://i.ibb.co.com/6RHKD5TM/BG.png"
               alt="Logo Image"
               // className="h-56 w-full object-cover rounded-t-2xl"
               className="h-9 w-36 object-cover"

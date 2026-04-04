@@ -15,7 +15,7 @@ const Footer = () => {
           <div className="md:col-span-12 lg:col-span-6 flex flex-col items-center text-center">
             <Link to="/">
               <img
-                src="https://i.ibb.co.com/YFvhdJFp/Logo-Brain-Beex.png"
+                src="https://i.ibb.co.com/6RHKD5TM/BG.png"
                 alt="Logo"
                 className="h-12 object-cover"
               />
