@@ -8,7 +8,7 @@ function AdminRoute({ children }) {
   if (loading) return <div>Loading...</div>;
 
   if (!user || role !== "admin") {
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
 
   return children;

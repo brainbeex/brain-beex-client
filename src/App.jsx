@@ -9,8 +9,13 @@ import Register from "./pages/Register";
 import PrivateRoute from "./routes/PrivateRoute";
 import MyApplications from "./pages/MyApplications";
 import CompetitionDetails from "./pages/CompetitionDetails";
+// import AdminRoute from "./routes/AdminRoute";
+// import AdminDashboard from "./pages/admin/AdminDashboard";
+// import AdminDashboard from "../pages/dashboard/AdminDashboard";
+import AdminDashboard from "./pages/dashboard/AdminDashboard";
+// import AdminRoute from "./AdminRoute";
 import AdminRoute from "./routes/AdminRoute";
-import AdminDashboard from "./pages/admin/AdminDashboard";
+import CreateCompetition from "./pages/dashboard/CreateCompetition";
 
 function App() {
   return (
@@ -33,10 +38,19 @@ function App() {
         />
 
         <Route
-          path="/admin"
+          path="/dashboard/admin"
           element={
             <AdminRoute>
               <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard/create-competition"
+          element={
+            <AdminRoute>
+              <CreateCompetition />
             </AdminRoute>
           }
         />
