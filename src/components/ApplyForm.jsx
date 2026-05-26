@@ -45,12 +45,15 @@ function ApplyForm({ competitionId }) {
 
       <input
         type="text"
-        placeholder="Project / GitHub Link"
+        placeholder="Paste your project submission link"
         value={submissionLink}
         onChange={(e) => setSubmissionLink(e.target.value)}
         className="w-full border p-2 mb-4"
         required
       />
+      <p className="text-sm text-gray-500 mb-4">
+        Submit your GitHub repo, live project, Google Drive, or portfolio link.
+      </p>
 
       <textarea
         placeholder="Your message"
