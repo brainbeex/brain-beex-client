@@ -13,11 +13,17 @@ const AdminDashboard = () => {
 
             <div className="mt-6 grid gap-4">
                 {/* <button className="btn btn-primary">Create Competition</button> */}
+                {/* <button className="btn btn-secondary">Manage Competitions</button> */}
+                {/* <button className="btn btn-accent">View Applications</button> */}
                 <Link to="/dashboard/create-competition" className="btn btn-primary">
                     Create Competition
                 </Link>
-                <button className="btn btn-secondary">Manage Competitions</button>
-                <button className="btn btn-accent">View Applications</button>
+                <Link to="/dashboard/manage-competitions" className="btn btn-secondary">
+                    Manage Competitions
+                </Link>
+                <Link to="/dashboard/applications" className="btn btn-accent">
+                    View Applications
+                </Link>
             </div>
         </div>
     );
