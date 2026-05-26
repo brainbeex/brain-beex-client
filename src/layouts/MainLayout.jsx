@@ -62,7 +62,7 @@ const MainLayout = () => {
 
             <li>
               <NavLink
-                to="/dashboard"
+                to="/dashboard/admin"
                 className={({ isActive }) =>
                   isActive
                     ? "text-navy font-semibold"
