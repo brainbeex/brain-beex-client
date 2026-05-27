@@ -3,115 +3,135 @@ import axiosInstance from "../../api/axiosInstance";
 
 const ViewApplications = () => {
 
-  const [applications, setApplications] = useState([]);
+    const [applications, setApplications] = useState([]);
 
-  const fetchApplications = async () => {
+    const fetchApplications = async () => {
 
-    try {
+        try {
 
-      const res = await axiosInstance.get(
-        "/applications"
-      );
+            const res = await axiosInstance.get(
+                "/applications"
+            );
 
-      setApplications(res.data.data);
+            setApplications(res.data.data);
 
-    } catch (error) {
-      console.error(error);
-    }
-  };
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-  useEffect(() => {
-    fetchApplications();
-  }, []);
+    useEffect(() => {
+        fetchApplications();
+    }, []);
 
-  const updateStatus = async (id, status) => {
+    const updateStatus = async (id, status) => {
 
-    try {
+        try {
 
-      await axiosInstance.patch(
-        `/applications/${id}`,
-        { status }
-      );
+            await axiosInstance.patch(
+                `/applications/${id}`,
+                { status }
+            );
 
-      fetchApplications();
+            fetchApplications();
 
-    } catch (error) {
-      console.error(error);
-    }
-  };
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-  return (
-    <div className="p-6">
+    return (
+        <div className="p-6">
 
-      <h1 className="text-2xl font-bold mb-6">
-        View Applications
-      </h1>
+            <h1 className="text-2xl font-bold mb-6">
+                View Applications
+            </h1>
 
-      <div className="grid gap-4">
+            <div className="grid gap-4">
 
-        {applications.map((app) => (
+                {applications.map((app) => (
 
-          <div
-            key={app._id}
-            className="border p-4 rounded-lg"
-          >
+                    <div
+                        key={app._id}
+                        className="border p-4 rounded-lg"
+                    >
 
-            <h3>
-                {" "}
-                {app.title}
+                        <p>
+                            <strong>Competition:</strong>
+                            {" "}
+                            {app.competitionId?.title}
+                        </p>
 
-            </h3>
+                        <p>
+                            <strong>Category:</strong>
+                            {" "}
+                            {app.competitionId?.category}
+                        </p>
 
-            <p>
-              <strong>User:</strong>
-              {" "}
-              {app.userEmail}
-            </p>
+                        <p>
+                            <strong>Organizer:</strong>
+                            {" "}
+                            {app.competitionId?.organizer}
+                        </p>
 
-            <p>
-              <strong>Status:</strong>
-              {" "}
-              {app.status}
-            </p>
+                        <p>
+                            Deadline:
+                            {" "}
+                            {new Date(
+                                app.competitionId?.deadline
+                            ).toLocaleDateString()}
+                        </p>
 
-            <a
-              href={app.submissionLink}
-              target="_blank"
-              className="text-blue-500 underline"
-            >
-              View Submission
-            </a>
+                        <p>
+                            <strong>User:</strong>
+                            {" "}
+                            {app.userEmail}
+                        </p>
 
-            <div className="flex gap-3 mt-4">
+                        <p>
+                            <strong>Status:</strong>
+                            {" "}
+                            {app.status}
+                        </p>
 
-              <button
-                className="btn btn-success btn-sm"
-                onClick={() =>
-                  updateStatus(app._id, "accepted")
-                }
-              >
-                Accept
-              </button>
+                        <a
+                            href={app.submissionLink}
+                            target="_blank"
+                            className="text-blue-500 underline"
+                        >
+                            View Submission
+                        </a>
 
-              <button
-                className="btn btn-error btn-sm"
-                onClick={() =>
-                  updateStatus(app._id, "rejected")
-                }
-              >
-                Reject
-              </button>
+                        <div className="flex gap-3 mt-4">
+
+                            <button
+                                className="btn btn-success btn-sm"
+                                onClick={() =>
+                                    updateStatus(app._id, "accepted")
+                                }
+                            >
+                                Accept
+                            </button>
+
+                            <button
+                                className="btn btn-error btn-sm"
+                                onClick={() =>
+                                    updateStatus(app._id, "rejected")
+                                }
+                            >
+                                Reject
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                ))}
 
             </div>
 
-          </div>
-
-        ))}
-
-      </div>
-
-    </div>
-  );
+        </div>
+    );
 };
 
 export default ViewApplications;
