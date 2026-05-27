@@ -56,6 +56,12 @@ const ViewApplications = () => {
             className="border p-4 rounded-lg"
           >
 
+            <h3>
+                {" "}
+                {app.title}
+
+            </h3>
+
             <p>
               <strong>User:</strong>
               {" "}
